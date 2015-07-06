@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-2.1.4.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery-ui-1.11.4.js"></script>
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/UserScripts.js"></script>
+    <style type="text/css">
+        #modalLogin {
+            position: fixed;
+            left: 68%;
+            top: 10%;
+            width: 400px;
+            height: 250px;
+            display: none;
+        }
+
+        #modalRegister {
+            position: fixed;
+            left: 68%;
+            top: 10%;
+            width: 400px;
+            height: 300px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Module</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    <li><a id="userName" href="#">@HttpContext.Current.User.Identity.Name</a></li>
+                    <li><a href="/Home/LogOff" id="btnlogoff">Log Off</a></li>
+                }
+                else
+                {
+
+                    <li><a id="userName" href="#"></a></li>
+                    <li><a href="#" id="btnlogoff" style="display:none;">Log Off</a></li>
+                    <li><a href="/Home/Login" id="btnlogin">Sign in</a></li>
+                }
+            </ul>
+        </div>
+    </nav>
+    <div class="modal-content navbar-right" id="modalLogin">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Welcome!</h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert-danger"><p id="error-message"></p></div>
+            <div class="alert-success"><p id="info-message"></p></div>
+            <p><input type="email" class="form-control" name="email" id="email1" placeholder="Enter Email" value=""></p>
+            <p><input type="password" class="form-control" id="password1" name="password" placeholder="Enter Password"></p>
+            <p>
+                <input type="button" class="btn btn-info" id="btnlog" value="Sign in" />
+                <button class="btn btn-default" data-toggle="modal" id="btn-register">Registration</button>
+        </div>
+    </div>
+    <div class="modal-content navbar-right" id="modalRegister">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Registration!</h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert-danger"><p id="error-message1"></p></div>
+           
+            <p><input type="email" class="form-control" name="email" id="email2" placeholder="Enter Email" value=""></p>
+            <p><input type="password" class="form-control" id="password2" name="password" placeholder="Enter Password"></p>
+            <p><input type="password" class="form-control" id="password3" name="password" placeholder="Confirm Password"></p>
+            <p>
+                <input type="button" class="btn btn-info" id="btnSave" value="Save" />
+        </div>
+    </div>
+    <div class="container" id="container">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
