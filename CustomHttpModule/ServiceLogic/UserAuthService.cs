@@ -19,8 +19,22 @@ namespace CustomHttpModule.ServiceLogic
         {
             if (userName != null && !string.IsNullOrEmpty(userName))
             {
-                HttpContext.Current.Response.Cookies.Add(new HttpCookie(cookieName, userName));
-                HttpContext.Current.Response.Cookies[cookieName].Expires = DateTime.Now.AddHours(1);
+                var ticket = new FormsAuthenticationTicket(
+                 1,
+                 userName,
+                 DateTime.Now,
+                 DateTime.Now.Add(FormsAuthentication.Timeout),
+                 false,
+                 string.Empty,
+                 FormsAuthentication.FormsCookiePath);
+
+                var encTicket = FormsAuthentication.Encrypt(ticket);
+                var AuthCookie = new HttpCookie(cookieName)
+                {
+                    Value = encTicket,
+                    Expires = DateTime.Now.Add(FormsAuthentication.Timeout)
+                };
+                HttpContext.Current.Response.Cookies.Set(AuthCookie);
             }
         }
 
@@ -40,8 +54,8 @@ namespace CustomHttpModule.ServiceLogic
                         HttpCookie authCookie = HttpContext.Current.Request.Cookies[cookieName];
                         if (authCookie != null && !string.IsNullOrEmpty(authCookie.Value))
                         {
-                            var ticket = authCookie.Value;
-                            _currentUser = new CustomIdentity(ticket, role);
+                            var ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                            _currentUser = new CustomIdentity(ticket.Name, role);
                             _principal = new CustomPrincipal(_currentUser, role);
                         }
                         else
